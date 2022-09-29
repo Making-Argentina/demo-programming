@@ -1,0 +1,41 @@
+version: "3.1"
+services:
+    web:
+        networks:
+            - backoffice        
+        depends_on:
+            - db
+        ports:
+            - "8069:8069"
+        volumes:
+            - ./docker-odoo-config:/etc/odoo
+            - ./test_addon:/mnt/extra-addons/test_addon
+            - odoo-web-data:/var/lib/odoo
+        environment:
+            - HOST=${HOST}
+            - PORT=${PORT}
+            - PASSWORD=${PASSWORD}
+        build:
+            context: .
+            dockerfile: Dockerfile        
+        command: odoo --dev all,xml,reload -s -c /etc/odoo/odoo.conf
+    db:
+        networks:
+            - backoffice
+        image: postgres:13
+        environment:
+            - POSTGRES_DB=postgres
+            - POSTGRES_PASSWORD=${PASSWORD}
+            - POSTGRES_USER=${DB_USER}
+            - PGDATA=/var/lib/postgresql/data/pgdata
+        volumes:
+            - odoo-db-data:/var/lib/postgresql/data/pgdata
+
+networks:
+    backoffice:
+        driver: bridge
+
+volumes:
+    odoo-web-data:
+    odoo-db-data:
+
