@@ -15,9 +15,7 @@ services:
             - HOST=${HOST}
             - PORT=${PORT}
             - PASSWORD=${PASSWORD}
-        build:
-            context: .
-            dockerfile: Dockerfile        
+        image: odoo
         command: odoo --dev all,xml,reload -s -c /etc/odoo/odoo.conf
     db:
         networks:
